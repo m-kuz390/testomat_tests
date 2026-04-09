@@ -7,7 +7,7 @@ from playwright.sync_api import Page, expect
 from tests.conftest import Config
 
 TARGET_PROJECT = "Grocery, Outdoors & Shoes"
-GROCERY_PROJECT_URL = "https://app.testomat.io/projects/grocery-outdoors-shoes/"
+GROCERY_PROJECT_URL = "https://app.testomat.io/projects/grocery-outdoors-shoes-074f0/"
 
 
 @pytest.fixture(scope="function")
@@ -64,7 +64,7 @@ def test_open_create_project(page: Page, login):
 
     page.get_by_role("link", name="Create project").click()
 
-    expect(page).to_have_url("https://app.testomat.io/projects/new")
+    expect(page).to_have_url("https://app.testomat.io/benefits")
 
 
 def test_search_project_in_company(page: Page, login):
