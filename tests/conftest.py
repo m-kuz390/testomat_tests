@@ -6,7 +6,7 @@ import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import Browser, BrowserContext, Page
 
-from src.web.Application import Application
+from src.web.application import Application
 
 load_dotenv()
 
@@ -57,16 +57,16 @@ def logged_app(auth_context: BrowserContext) -> Generator[Application, None, Non
     pg.close()
 
 
+def clear_browser_state(page: Page) -> None:
+    page.context.clear_cookies()
+    page.evaluate("() => { localStorage.clear(); sessionStorage.clear(); }")
+
+
 @pytest.fixture(scope="module")
 def module_context(browser: Browser, browser_context_args: dict) -> Generator[BrowserContext, None, None]:
     ctx = browser.new_context(**browser_context_args)
     yield ctx
     ctx.close()
-
-
-def clear_browser_state(page: Page) -> None:
-    page.context.clear_cookies()
-    page.evaluate("() => { localStorage.clear(); sessionStorage.clear(); }")
 
 
 @pytest.fixture(scope="module")

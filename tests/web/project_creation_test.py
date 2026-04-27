@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.web.Application import Application
+from src.web.application import Application
 
 
 def test_new_project_creation(app: Application, login):

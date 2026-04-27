@@ -5,7 +5,7 @@ from playwright.sync_api import Page, expect
 
 
 class SideBar:
-    def __init__(self, page: Page):
+    def __init__(self, page: Page) -> None:
         self.page = page
         self._sidebar = page.locator(".mainnav-menu")
 

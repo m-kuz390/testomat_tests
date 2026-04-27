@@ -2,7 +2,7 @@ import re
 
 from playwright.sync_api import expect
 
-from src.web.Application import Application
+from src.web.application import Application
 
 TARGET_PROJECT = "Grocery, Outdoors & Shoes"
 TARGET_PROJECT_URL = "/projects/grocery-outdoors-shoes-074f0/"
@@ -51,3 +51,13 @@ def test_create_project_button_navigates(app: Application, login):
     app.projects_page.header.click_create()
 
     expect(app.page).to_have_url(re.compile(r"/projects/new$"))
+
+
+def test_create_project_navigates_to_benefits_on_free_plan(app: Application, login):
+    app.projects_page.header.select_company("Free Projects")
+
+    expect(app.page.get_by_text("You have not created any projects yet")).to_be_visible()
+
+    app.page.get_by_role("link", name="Create project").click()
+
+    expect(app.page).to_have_url("https://app.testomat.io/benefits")
