@@ -4,4 +4,4 @@ __pycache__/
 *.pyc
 .env
 videos/
-**/videos/
+.python-version
