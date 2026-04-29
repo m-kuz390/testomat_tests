@@ -3,5 +3,5 @@ __pycache__/
 .idea/
 *.pyc
 .env
-videos/
+test_result/
 .python-version
