@@ -20,6 +20,7 @@ dev = [
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+pythonpath = ["src"]
 python_files = ["tests_*.py", "*_test.py", "*_tests.py"]
 python_functions = ["test_*"]
 norecursedirs = [".git", ".venv", ".claude", "__pycache__", "build", "dist", "*.egg-info"]

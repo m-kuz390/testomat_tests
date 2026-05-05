@@ -1,8 +1,11 @@
+import pytest
 from faker import Faker
 
 from src.web.application import Application
 
 
+@pytest.mark.smoke
+@pytest.mark.web
 def test_new_project_creation(app: Application, login):
     target_project_name = Faker().company()
 

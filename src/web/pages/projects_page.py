@@ -11,6 +11,10 @@ class ProjectsPage:
         self.page = page
         self.header = ProjectPageHeader(page)
 
+    def open(self) -> Self:
+        self.page.goto("/projects")
+        return self
+
     def is_loaded(self) -> Self:
         self.header.is_loaded()
         return self

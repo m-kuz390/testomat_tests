@@ -6,6 +6,8 @@ from playwright.sync_api import Locator, Page, expect
 class ProjectPageHeader:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.enterprise_plan_label = page.get_by_text("Enterprise plan")
+        self.free_plan_label = page.get_by_text("Free plan")
 
     def is_loaded(self) -> Self:
         expect(self.page.locator(".common-page-header")).to_be_visible()

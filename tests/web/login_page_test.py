@@ -30,6 +30,7 @@ invalid_credentials = [
 ]
 
 
+@pytest.mark.web
 @pytest.mark.parametrize("email, password", invalid_credentials)
 def test_login_invalid(shared_app: Application, configs: Config, email, password: str):
     actual_email = configs.email if email is None else email
@@ -40,6 +41,8 @@ def test_login_invalid(shared_app: Application, configs: Config, email, password
     shared_app.login_page.invalid_login_message_visible()
 
 
+@pytest.mark.smoke
+@pytest.mark.web
 def test_login_with_valid_creds(app: Application, configs: Config):
     app.home_page.open()
     app.home_page.is_loaded()

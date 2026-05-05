@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-from playwright.sync_api import Browser, BrowserContext, Page
+from playwright.sync_api import Browser, BrowserContext, Page, expect
 
 from src.web.application import Application
 from tests.fixtures.config import Config
@@ -65,6 +65,11 @@ def cookies(page: Page) -> CookieHelper:
 
 
 @pytest.fixture(scope="function")
+def logged_cookies(logged_app: Application) -> CookieHelper:
+    return CookieHelper(logged_app.page.context)
+
+
+@pytest.fixture(scope="function")
 def logged_app(auth_context: BrowserContext) -> Generator[Application, None, None]:
     pg = auth_context.new_page()
     pg.goto("/projects")
@@ -100,3 +105,15 @@ def login(app: Application, configs: Config):
     app.login_page.open()
     app.login_page.is_loaded()
     app.login_page.login_user(email=configs.email, password=configs.password)
+
+
+@pytest.fixture(scope="function")
+def free_project_app(auth_context: BrowserContext) -> Generator[Application, None, None]:
+    pg = auth_context.new_page()
+    pg.goto("/projects")
+    app = Application(pg)
+    app.projects_page.is_loaded()
+    app.projects_page.header.select_company("Free Projects")
+    expect(app.projects_page.header.free_plan_label).to_be_visible()
+    yield app
+    pg.close()
