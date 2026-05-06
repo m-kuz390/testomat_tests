@@ -9,7 +9,7 @@ dependencies = [
     "pytest-html==4.2.0",
     "pytest-playwright==0.7.2",
     "python-dotenv==1.2.2",
-    "requests==2.32.3",
+    "httpx>=0.27",
 ]
 
 [dependency-groups]
@@ -36,6 +36,7 @@ markers = [
     "smoke: Quick smoke test for basic functionality",
     "regression: Full regression test suite",
     "web: Web UI tests using Playwright",
+    "api: API tests using requests",
     "slow: Tests that take longer to execute",
 ]
 console_output_style = "progress"

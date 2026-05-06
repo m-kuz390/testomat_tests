@@ -7,6 +7,7 @@ pytest_plugins = [
     "tests.fixtures.playwright",
     "tests.fixtures.cookie_helper",
     "tests.fixtures.app",
+    "tests.fixtures.api",
 ]
 
 
