@@ -7,6 +7,7 @@ from playwright.sync_api import Browser, BrowserContext, Page, expect
 from src.web.application import Application
 from tests.fixtures.config import Config
 from tests.fixtures.cookie_helper import CookieHelper, clear_browser_state
+from tests.fixtures.playwright import start_tracing, stop_tracing_on_failure
 
 PROJECT_ROOT = Path(__file__).parents[2]
 STORAGE_STATE_PATH = PROJECT_ROOT / "test_result" / ".auth" / "storage_state.json"
@@ -43,17 +44,6 @@ def storage_state(
     return str(STORAGE_STATE_PATH)
 
 
-@pytest.fixture(scope="session")
-def auth_context(
-    browser: Browser,
-    browser_context_args: dict,
-    storage_state: str,
-) -> Generator[BrowserContext, None, None]:
-    ctx = browser.new_context(**browser_context_args, storage_state=storage_state)
-    yield ctx
-    ctx.close()
-
-
 @pytest.fixture(scope="function")
 def app(page: Page) -> Application:
     return Application(page)
@@ -70,11 +60,20 @@ def logged_cookies(logged_app: Application) -> CookieHelper:
 
 
 @pytest.fixture(scope="function")
-def logged_app(auth_context: BrowserContext) -> Generator[Application, None, None]:
-    pg = auth_context.new_page()
+def logged_app(
+    browser: Browser,
+    browser_context_args: dict,
+    storage_state: str,
+    request: pytest.FixtureRequest,
+) -> Generator[Application, None, None]:
+    ctx = browser.new_context(**browser_context_args, storage_state=storage_state)
+    start_tracing(ctx)
+    pg = ctx.new_page()
     pg.goto("/projects")
     yield Application(pg)
     pg.close()
+    stop_tracing_on_failure(ctx, request)
+    ctx.close()
 
 
 @pytest.fixture(scope="module")
@@ -108,8 +107,15 @@ def login(app: Application, configs: Config):
 
 
 @pytest.fixture(scope="function")
-def free_project_app(auth_context: BrowserContext) -> Generator[Application, None, None]:
-    pg = auth_context.new_page()
+def free_project_app(
+    browser: Browser,
+    browser_context_args: dict,
+    storage_state: str,
+    request: pytest.FixtureRequest,
+) -> Generator[Application, None, None]:
+    ctx = browser.new_context(**browser_context_args, storage_state=storage_state)
+    start_tracing(ctx)
+    pg = ctx.new_page()
     pg.goto("/projects")
     app = Application(pg)
     app.projects_page.is_loaded()
@@ -117,3 +123,5 @@ def free_project_app(auth_context: BrowserContext) -> Generator[Application, Non
     expect(app.projects_page.header.free_plan_label).to_be_visible()
     yield app
     pg.close()
+    stop_tracing_on_failure(ctx, request)
+    ctx.close()
