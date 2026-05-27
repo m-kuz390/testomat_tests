@@ -12,6 +12,7 @@ pytest_plugins = [
     "tests.fixtures.cookie_helper",
     "tests.fixtures.app",
     "tests.fixtures.api",
+    "tests.fixtures.selenium",
 ]
 
 
