@@ -17,16 +17,6 @@ def assert_valid_suite(suite: Suite, expected_title: str | None = None) -> None:
         assert suite.attributes.title == expected_title
 
 
-@pytest.fixture
-def new_suite(suite_controller: SuiteController, project: Project) -> Suite:
-    suite = suite_controller.create(project_id=project.id, title=fake.sentence())
-    yield suite
-    try:
-        suite_controller.delete(project_id=project.id, suite_id=suite.id)
-    except httpx.HTTPStatusError:
-        pass
-
-
 @pytest.mark.api
 def test_create_suite_returns_valid_model(new_suite: Suite):
     assert_valid_suite(new_suite)
@@ -44,8 +34,6 @@ def test_get_suite_by_id_matches_created(
     assert fetched.id == new_suite.id
 
 
-# --- Негативні сценарії ---
-
 @pytest.mark.api
 def test_create_suite_with_invalid_project_id_returns_404(suite_controller: SuiteController):
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
@@ -61,8 +49,6 @@ def test_get_suite_with_invalid_id_returns_404(suite_controller: SuiteController
 
     assert exc_info.value.response.status_code == 404
 
-
-# --- Update і Delete ---
 
 @pytest.mark.api
 def test_update_suite_changes_title(
