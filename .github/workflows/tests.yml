@@ -25,6 +25,9 @@ jobs:
     if: github.event_name == 'pull_request'
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup environment
         uses: ./.github/actions/setup
 
@@ -44,6 +47,9 @@ jobs:
       (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup environment
         uses: ./.github/actions/setup
         with:
@@ -85,6 +91,9 @@ jobs:
       (needs.smoke-tests.result == 'success' || needs.smoke-tests.result == 'skipped')
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup environment
         uses: ./.github/actions/setup
         with:
