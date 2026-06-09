@@ -8,9 +8,7 @@ class TestController(BaseController):
             "data": {
                 "type": "tests",
                 "attributes": {"title": title, "description": description},
-                "relationships": {
-                    "suite": {"data": {"type": "suites", "id": suite_id}}
-                },
+                "relationships": {"suite": {"data": {"type": "suites", "id": suite_id}}},
             }
         }
         data = self._post(f"/api/{project_id}/tests", payload)
