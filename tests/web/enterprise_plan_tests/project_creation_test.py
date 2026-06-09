@@ -17,6 +17,8 @@ def test_new_project_creation(app: Application, login):
     (app.project_page.side_bar.is_loaded().click_logo().is_tab_active("Tests"))
 
 
+@pytest.mark.regression
+@pytest.mark.web
 def test_new_project_creation_and_test_popup(logged_app: Application):
     target_project_name = Faker().company()
 
@@ -37,7 +39,7 @@ def test_new_project_creation_and_test_popup(logged_app: Application):
     logged_app.test_modal.edit_is_visible("test")
 
 
-@pytest.mark.smoke
+@pytest.mark.regression
 @pytest.mark.web
 def test_open_project_and_create_test_suite_from_side_bar(api_client: ApiClient, logged_app: Application):
     all_projects = api_client.get("/api/projects").json()

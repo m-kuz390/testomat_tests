@@ -42,6 +42,7 @@ markers = [
     "web: Web UI tests using Playwright",
     "api: API tests using requests",
     "slow: Tests that take longer to execute",
+    "selenium: Tests using Selenium WebDriver",
 ]
 console_output_style = "progress"
 log_cli = true

@@ -3,6 +3,7 @@ import pytest
 from src.api.client import ApiClient
 
 
+@pytest.mark.smoke
 @pytest.mark.api
 def test_response_is_successful(api_client: ApiClient):
     response = api_client.get("/api/projects")
@@ -10,6 +11,7 @@ def test_response_is_successful(api_client: ApiClient):
     assert response.status_code == 200
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_response_contains_projects_data(api_client: ApiClient):
     body = api_client.get("/api/projects").json()
@@ -18,6 +20,7 @@ def test_response_contains_projects_data(api_client: ApiClient):
     assert isinstance(body["data"], list)
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_each_project_has_id_and_type(api_client: ApiClient):
     projects = api_client.get("/api/projects").json()["data"]
@@ -27,6 +30,7 @@ def test_each_project_has_id_and_type(api_client: ApiClient):
         assert "type" in project
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_each_project_has_title_in_attributes(api_client: ApiClient):
     projects = api_client.get("/api/projects").json()["data"]

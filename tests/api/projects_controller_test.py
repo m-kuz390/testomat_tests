@@ -13,6 +13,7 @@ def assert_valid_project(project: Project) -> None:
     assert project.attributes.title is not None
 
 
+@pytest.mark.smoke
 @pytest.mark.api
 def test_get_all_projects_returns_valid_models(project_controller: ProjectController):
     projects = project_controller.get_all()
@@ -22,6 +23,7 @@ def test_get_all_projects_returns_valid_models(project_controller: ProjectContro
         assert_valid_project(project)
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_get_project_by_id_matches(project_controller: ProjectController, project: Project):
     fetched = project_controller.get_by_id(project_id=project.id)
@@ -31,6 +33,7 @@ def test_get_project_by_id_matches(project_controller: ProjectController, projec
     assert fetched.attributes.title == project.attributes.title
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_get_project_with_invalid_id_returns_404(project_controller: ProjectController):
     with pytest.raises(httpx.HTTPStatusError) as exc_info:

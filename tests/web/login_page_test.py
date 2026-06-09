@@ -30,6 +30,7 @@ invalid_credentials = [
 ]
 
 
+@pytest.mark.regression
 @pytest.mark.web
 @pytest.mark.parametrize("email, password", invalid_credentials)
 def test_login_invalid(shared_app: Application, configs: Config, email, password: str):

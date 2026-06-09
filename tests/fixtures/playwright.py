@@ -1,8 +1,11 @@
+import os
 from pathlib import Path
 from typing import Generator
 
 import pytest
 from playwright.sync_api import Browser, BrowserContext
+
+IS_CI = bool(os.getenv("CI"))
 
 PROJECT_ROOT = Path(__file__).parents[2]
 TRACES_DIR = PROJECT_ROOT / "test_result" / "traces"
@@ -24,13 +27,15 @@ def stop_tracing_on_failure(context: BrowserContext, request: pytest.FixtureRequ
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
-    return {
+    args = {
         **browser_type_launch_args,
-        "channel": "chrome",
-        "headless": False,
+        "headless": IS_CI,
         "slow_mo": 0,
         "timeout": 30000,
     }
+    if not IS_CI:
+        args["channel"] = "chrome"
+    return args
 
 
 @pytest.fixture(scope="session")
