@@ -52,3 +52,4 @@ def test_login_with_valid_creds(app: Application, configs: Config):
     app.login_page.is_loaded()
     app.login_page.login_user(configs.email, configs.password)
     app.projects_page.is_loaded()
+    assert False, "temp: trace check on CI"  # noqa: PT015
