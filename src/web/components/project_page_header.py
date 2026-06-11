@@ -28,10 +28,12 @@ class ProjectPageHeader:
     def select_company(self, company_name: str) -> Self:
         with self.page.expect_navigation():
             self.page.locator("#company_id").select_option(label=company_name)
+        self.page.goto(self.page.url)
         return self
 
     @allure.step
     def search_project(self, project_name: str) -> Self:
+        self.page.wait_for_function("typeof run_search_project !== 'undefined'")
         self.page.locator("#content-desktop #search").type(project_name)
         return self
 
