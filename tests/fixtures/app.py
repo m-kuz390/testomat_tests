@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Generator
 
@@ -10,7 +11,25 @@ from tests.fixtures.cookie_helper import CookieHelper, clear_browser_state
 from tests.fixtures.playwright import start_tracing, stop_tracing_on_failure
 
 PROJECT_ROOT = Path(__file__).parents[2]
-STORAGE_STATE_PATH = PROJECT_ROOT / "test_result" / ".auth" / "storage_state.json"
+TEST_RESULT_DIR = PROJECT_ROOT / "test_result"
+STORAGE_STATE_PATH = TEST_RESULT_DIR / ".auth" / "storage_state.json"
+
+
+def _make_context(
+    browser: Browser,
+    browser_context_args: dict,
+    storage_path: Path | None = None,
+) -> BrowserContext:
+    kwargs = {**browser_context_args}
+
+    if os.getenv("CI", "false").lower() != "true":
+        kwargs["record_video_dir"] = str(TEST_RESULT_DIR / "videos")
+
+    has_state = storage_path is not None and storage_path.exists()
+    if has_state:
+        kwargs["storage_state"] = str(storage_path)
+
+    return browser.new_context(**kwargs)
 
 
 def _login_and_save_state(
@@ -20,7 +39,7 @@ def _login_and_save_state(
 ) -> None:
     STORAGE_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    ctx = browser.new_context(**browser_context_args)
+    ctx = _make_context(browser, browser_context_args)
     pg = ctx.new_page()
     _app = Application(pg)
     _app.home_page.open()
@@ -66,13 +85,13 @@ def logged_app(
     storage_state: str,
     request: pytest.FixtureRequest,
 ) -> Generator[Application, None, None]:
-    ctx = browser.new_context(**browser_context_args, storage_state=storage_state)
+    ctx = _make_context(browser, browser_context_args, STORAGE_STATE_PATH)
     start_tracing(ctx)
     pg = ctx.new_page()
     pg.goto("/projects")
     yield Application(pg)
+    stop_tracing_on_failure(pg, request)
     pg.close()
-    stop_tracing_on_failure(ctx, request)
     ctx.close()
 
 
@@ -81,7 +100,7 @@ def module_context(
     browser: Browser,
     browser_context_args: dict,
 ) -> Generator[BrowserContext, None, None]:
-    ctx = browser.new_context(**browser_context_args)
+    ctx = _make_context(browser, browser_context_args)
     yield ctx
     ctx.close()
 
@@ -113,7 +132,7 @@ def free_project_app(
     storage_state: str,
     request: pytest.FixtureRequest,
 ) -> Generator[Application, None, None]:
-    ctx = browser.new_context(**browser_context_args, storage_state=storage_state)
+    ctx = _make_context(browser, browser_context_args, STORAGE_STATE_PATH)
     start_tracing(ctx)
     pg = ctx.new_page()
     pg.goto("/projects")
@@ -122,6 +141,6 @@ def free_project_app(
     app.projects_page.header.select_company("Free Projects")
     expect(app.projects_page.header.free_plan_label).to_be_visible()
     yield app
+    stop_tracing_on_failure(pg, request)
     pg.close()
-    stop_tracing_on_failure(ctx, request)
     ctx.close()

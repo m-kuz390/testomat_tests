@@ -17,11 +17,13 @@ def assert_valid_test(test: Test, expected_title: str | None = None) -> None:
         assert test.attributes.title == expected_title
 
 
+@pytest.mark.smoke
 @pytest.mark.api
 def test_create_test_returns_valid_model(new_test: Test):
     assert_valid_test(new_test)
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_get_test_by_id_matches_created(
     test_controller: TestController,
@@ -34,6 +36,7 @@ def test_get_test_by_id_matches_created(
     assert fetched.id == new_test.id
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_delete_test_removes_it(
     test_controller: TestController,
@@ -48,6 +51,7 @@ def test_delete_test_removes_it(
     assert exc_info.value.response.status_code == 404
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_create_test_with_invalid_suite_id_returns_404(
     test_controller: TestController,

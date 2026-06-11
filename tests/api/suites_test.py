@@ -17,11 +17,13 @@ def assert_valid_suite(suite: Suite, expected_title: str | None = None) -> None:
         assert suite.attributes.title == expected_title
 
 
+@pytest.mark.smoke
 @pytest.mark.api
 def test_create_suite_returns_valid_model(new_suite: Suite):
     assert_valid_suite(new_suite)
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_get_suite_by_id_matches_created(
     suite_controller: SuiteController,
@@ -34,6 +36,7 @@ def test_get_suite_by_id_matches_created(
     assert fetched.id == new_suite.id
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_create_suite_with_invalid_project_id_returns_404(suite_controller: SuiteController):
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
@@ -42,6 +45,7 @@ def test_create_suite_with_invalid_project_id_returns_404(suite_controller: Suit
     assert exc_info.value.response.status_code == 404
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_get_suite_with_invalid_id_returns_404(suite_controller: SuiteController, project: Project):
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
@@ -50,6 +54,7 @@ def test_get_suite_with_invalid_id_returns_404(suite_controller: SuiteController
     assert exc_info.value.response.status_code == 404
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_update_suite_changes_title(
     suite_controller: SuiteController,
@@ -67,6 +72,7 @@ def test_update_suite_changes_title(
     assert_valid_suite(updated, expected_title=new_title)
 
 
+@pytest.mark.regression
 @pytest.mark.api
 def test_delete_suite_removes_it(suite_controller: SuiteController, project: Project, new_suite: Suite):
     suite_controller.delete(project_id=project.id, suite_id=new_suite.id)

@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from typing import Generator, cast
 
@@ -5,6 +6,7 @@ import pytest
 from pluggy import Result
 
 PROJECT_ROOT = Path(__file__).parent.parent
+_RETENTION_SECONDS = 14 * 24 * 60 * 60
 
 pytest_plugins = [
     "tests.fixtures.config",
@@ -14,6 +16,17 @@ pytest_plugins = [
     "tests.fixtures.api",
     "tests.fixtures.selenium",
 ]
+
+
+def pytest_sessionstart(session: pytest.Session) -> None:  # noqa: ARG001
+    cutoff = time.time() - _RETENTION_SECONDS
+    for folder in ["traces", "videos"]:
+        directory = PROJECT_ROOT / "test_result" / folder
+        if not directory.exists():
+            continue
+        for file in directory.iterdir():
+            if file.is_file() and file.stat().st_mtime < cutoff:
+                file.unlink()
 
 
 def pytest_configure(config):

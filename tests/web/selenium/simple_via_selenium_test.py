@@ -1,3 +1,4 @@
+import pytest
 from selenium.common import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -9,6 +10,9 @@ from web.selenium.pages.login_page import LoginPage
 from web.selenium.pages.login_page_v2 import LoginPageV2
 
 
+@pytest.mark.regression
+@pytest.mark.web
+@pytest.mark.selenium
 def test_selenium_login_and_search(driver: WebDriver, configs: Config):
     wait = WebDriverWait(
         driver=driver,
@@ -29,6 +33,9 @@ def test_selenium_login_and_search(driver: WebDriver, configs: Config):
     wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, f".breadcrumbs-page [title='{target_project}']")))
 
 
+@pytest.mark.smoke
+@pytest.mark.web
+@pytest.mark.selenium
 def test_login_with_page_object_v1(driver: WebDriver, configs: Config):
     login_page = LoginPage(driver)
     login_page.open(configs.login_url)
@@ -37,6 +44,9 @@ def test_login_with_page_object_v1(driver: WebDriver, configs: Config):
     login_page.should_see_success_message()
 
 
+@pytest.mark.regression
+@pytest.mark.web
+@pytest.mark.selenium
 def test_login_with_page_object_v2(driver: WebDriver, configs: Config):
     login_page = LoginPageV2(driver)
     login_page.open(configs.login_url)
@@ -45,12 +55,18 @@ def test_login_with_page_object_v2(driver: WebDriver, configs: Config):
     login_page.should_see_success_message()
 
 
+@pytest.mark.regression
+@pytest.mark.web
+@pytest.mark.selenium
 def test_login_page_url(driver: WebDriver, configs: Config):
     wait = WebDriverWait(driver=driver, timeout=10)
     driver.get(configs.login_url)
     wait.until(EC.url_contains("sign_in"))
 
 
+@pytest.mark.regression
+@pytest.mark.web
+@pytest.mark.selenium
 def test_login_with_remember_me(driver: WebDriver, configs: Config):
     login_page = LoginPage(driver)
     login_page.open(configs.login_url)
@@ -59,6 +75,9 @@ def test_login_with_remember_me(driver: WebDriver, configs: Config):
     login_page.should_see_success_message()
 
 
+@pytest.mark.regression
+@pytest.mark.web
+@pytest.mark.selenium
 def test_switch_projects_view(driver: WebDriver, configs: Config):
     wait = WebDriverWait(
         driver=driver,
