@@ -26,7 +26,8 @@ class ProjectPageHeader:
 
     @allure.step
     def select_company(self, company_name: str) -> Self:
-        self.page.locator("#company_id").select_option(label=company_name)
+        with self.page.expect_navigation():
+            self.page.locator("#company_id").select_option(label=company_name)
         self.page.goto(self.page.url)
         return self
 
