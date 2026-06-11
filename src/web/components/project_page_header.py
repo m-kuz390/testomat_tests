@@ -1,6 +1,6 @@
-import allure
 from typing import Self
 
+import allure
 from playwright.sync_api import Locator, Page, expect
 
 
@@ -27,11 +27,12 @@ class ProjectPageHeader:
     @allure.step
     def select_company(self, company_name: str) -> Self:
         self.page.locator("#company_id").select_option(label=company_name)
+        self.page.wait_for_load_state("networkidle")
         return self
 
     @allure.step
     def search_project(self, project_name: str) -> Self:
-        self.page.locator("#content-desktop #search").fill(project_name)
+        self.page.locator("#content-desktop #search").type(project_name)
         return self
 
     @allure.step
