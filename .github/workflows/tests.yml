@@ -134,7 +134,7 @@ jobs:
   publish-report:
     runs-on: ubuntu-latest
     needs: [ smoke-tests, regression-tests ]
-    if: always() && needs.smoke-tests.result != 'skipped'
+    if: always() && (needs.smoke-tests.result != 'skipped' || needs['regression-tests'].result != 'skipped')
     permissions:
       pages: write
       id-token: write
