@@ -171,6 +171,25 @@ jobs:
         if: needs.regression-tests.result != 'skipped'
         run: allure generate allure-results/regression -o pages/allure/regression --clean
 
+      - name: Generate index page
+        run: |
+          mkdir -p pages
+          cat > pages/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>Test Reports</title>
+            <style>body{font-family:sans-serif;padding:2rem}a{display:block;margin:.5rem 0;font-size:1.1rem}</style>
+          </head>
+          <body>
+            <h1>Test Reports</h1>
+            <a href="allure/smoke/">Smoke Tests</a>
+            <a href="allure/regression/">Regression Tests</a>
+          </body>
+          </html>
+          EOF
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
