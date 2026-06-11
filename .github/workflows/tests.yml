@@ -147,16 +147,29 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download smoke Allure results
+        if: needs.smoke-tests.result != 'skipped'
         uses: actions/download-artifact@v4
         with:
           name: smoke-allure-results
-          path: allure-results
+          path: allure-results/smoke
+
+      - name: Download regression Allure results
+        if: needs.regression-tests.result != 'skipped'
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-allure-results
+          path: allure-results/regression
 
       - name: Install Allure CLI
         run: npm install -g allure-commandline@2.42.1
 
-      - name: Generate Allure report
-        run: allure generate allure-results -o allure-report --clean
+      - name: Generate smoke Allure report
+        if: needs.smoke-tests.result != 'skipped'
+        run: allure generate allure-results/smoke -o pages/allure/smoke --clean
+
+      - name: Generate regression Allure report
+        if: needs.regression-tests.result != 'skipped'
+        run: allure generate allure-results/regression -o pages/allure/regression --clean
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -164,8 +177,18 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: allure-report
+          path: pages
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Add report links to summary
+        run: |
+          echo "## Test Reports" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.smoke-tests.result }}" != "skipped" ]; then
+            echo "- [Smoke Tests](${{ steps.deployment.outputs.page_url }}allure/smoke/)" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ needs.regression-tests.result }}" != "skipped" ]; then
+            echo "- [Regression Tests](${{ steps.deployment.outputs.page_url }}allure/regression/)" >> $GITHUB_STEP_SUMMARY
+          fi
