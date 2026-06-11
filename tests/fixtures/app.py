@@ -91,7 +91,7 @@ def logged_app(
     pg.goto("/projects")
     yield Application(pg)
     pg.close()
-    stop_tracing_on_failure(ctx, request)
+    stop_tracing_on_failure(pg, request)
     ctx.close()
 
 
@@ -142,5 +142,5 @@ def free_project_app(
     expect(app.projects_page.header.free_plan_label).to_be_visible()
     yield app
     pg.close()
-    stop_tracing_on_failure(ctx, request)
+    stop_tracing_on_failure(pg, request)
     ctx.close()

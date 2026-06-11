@@ -1,3 +1,4 @@
+import allure
 from typing import Self
 
 from playwright.sync_api import Page
@@ -11,13 +12,16 @@ class ProjectsPage:
         self.page = page
         self.header = ProjectPageHeader(page)
 
+    @allure.step
     def open(self) -> Self:
         self.page.goto("/projects")
         return self
 
+    @allure.step
     def is_loaded(self) -> Self:
         self.header.is_loaded()
         return self
 
+    @allure.step
     def get_project_card(self, project_name: str) -> ProjectCard:
         return ProjectCard(self.page, project_name)
